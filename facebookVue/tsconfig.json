@@ -1,0 +1,22 @@
+{
+  "compilerOptions": {
+    "module": "NodeNext",
+    "baseUrl": ".",  // Définit la base comme étant la racine du projet
+    "paths": {
+      "@/*": ["src/*"]  // Utilisation de l'alias @ pour référencer le répertoire src
+    }
+  },
+  "files": [],
+  "references": [
+    {
+      "path": "./tsconfig.node.json"
+    },
+    {
+      "path": "./tsconfig.app.json"
+    },
+    {
+      "path": "./tsconfig.vitest.json"
+    }
+  ]
+}
+
