@@ -1,89 +1,77 @@
 <template>
-    <RouterView />
-    <div>
-      <div>
-        <p v-if="errorMessageEmail" style="color: red;">{{ errorMessageEmail }}</p>
-        <p v-if="errorMessagePassword" style="color: red;">{{ errorMessagePassword }}</p>
-        <p v-if="errorMessagePassword" style="color: red;">{{ errorMessagePassword }}</p>
-        <p v-if="errorMesageConfirmPassword" style="color: red;">{{ errorMesageConfirmPassword }}</p>
-      </div>
-      <form action="" @submit.prevent="submiteForm">
-        <InputUsername @event-username="getUserName"/>
-        <InputCivilite />
-        <InputMail :errorMessageEmail="errorMessageEmail" @event-email="gerEmail"/>
-        <InputPassWord @event-password="gerPassWord"/>
-        <ConfirmInput :errorMesageConfirmPassword="errorMesageConfirmPassword" @event-confirmPw="gerPassWordConfirm" />
-        <buttonRegister @event-register="validatePassword"/>
-        <router-link to="/forgetPassWord" >forgot password ?</router-link>
-      </form>
-    </div>
-  </template>
-  
-  <script setup lang="ts">
-  import buttonRegister from './buttonRegister.vue';
-  import InputCivilite from './InputCivilite.vue';
-  import InputUsername from '@/components/InputUsername.vue';
-  import InputPassWord from '@/components/InputPassWord.vue';
-  import ConfirmInput from '@/components/ConfirmInput.vue';
-  import InputMail from './InputMail.vue';
-  import { ref, watch } from 'vue';
-  import type { Ref } from 'vue'
+  <RouterView />
+  <div>
+    <form @submit.prevent="submitForm">
+      <h1>Register to task_Manage</h1>
+      <InputFirstName v-model="state.firstName"/>
+      <small v-if="v$.firstName.$error && v$.firstName.$touch" style="color: red;">{{ v$.firstName.$errors[0].$message }}</small>
 
-  
-  const username: Ref<string> = ref('');
-  const email: Ref<string> = ref('');
-  const errorMessageEmail : Ref<string> = ref('');
-  const password : Ref<string> = ref('')
-  const passwordConfirm : Ref<string> = ref('')
-  const isCorrectPassword : Ref<boolean> = ref(true)
-  const errorMessagePassword = ref ('')
-  const errorMesageConfirmPassword : Ref<string> = ref('')
-  
-  const getUserName = (usernameInput : string) => {
-    username.value = usernameInput
-  } 
-  const gerEmail = (emailInputComponent : string) =>{
-    email.value = emailInputComponent
-  }
-  const gerPassWord = (passwordInputComponent : string) =>{
-    password.value = passwordInputComponent
-  }
-  const gerPassWordConfirm = (passwordInputComponentConfirm : string) =>{
-    passwordConfirm.value = passwordInputComponentConfirm
-  }
-  const validatePassword = () => {
-    
-    const symbolRegex = /[!@#$%^&*(),.?":{}|<>]/
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[a-zA-Z]{2,6}$/
-    
-    if(!emailRegex.test(email.value)){
-      errorMessageEmail.value = 'Incorrect email address'
-      isCorrectPassword.value = false
-    }else if(password.value.length < 6){
-      errorMessageEmail.value = ''
-      errorMessagePassword.value = 'Password must contain at least 6 characters.'
-      isCorrectPassword.value = false
-    }else if(!symbolRegex.test(password.value)){
-      errorMessagePassword.value = 'assword must contain at least one symbol.'
-      isCorrectPassword.value = false
-    }else if(passwordConfirm.value !== password.value){
-      errorMessagePassword.value =''
-      errorMesageConfirmPassword.value = 'Passwords do not match'
-      isCorrectPassword.value = false
-    }else{
-      isCorrectPassword.value = true
-      errorMesageConfirmPassword.value = ''
-    }
-  }
+      <InputLastName  v-model="state.lastName"/>
+      <small v-if="v$.lastName.$error" style="color: red;">{{ v$.lastName.$errors[0].$message }}</small>
 
-  const submiteForm = () =>{
-    if(isCorrectPassword.value === true){
-      
-    }
-  }
+      <InputAgeUser v-model="state.age"/>
+      <small v-if="v$.birthDate.$error" style="color: red;">{{ v$.birthDate.$errors[0].$message }}</small>
 
-  </script>
-  
-  <style scoped>
-  
-  </style>
+      <InputMail  v-model="state.email"/>
+      <small v-if="v$.email.$error" style="color: red;">{{ v$.email.$errors[0].$message }}</small>
+
+      <InputPassWord  v-model="state.password"/>
+      <small v-if="v$.password.$error" style="color: red;">{{ v$.password.$errors[0].$message }}</small>
+
+      <ConfirmInput  v-model="state.confirmPassword"/>
+      <small v-if="v$.confirmPassword.$error" style="color: red;">{{ v$.confirmPassword.$errors[0].$message }}</small>
+
+      <buttonRegister />
+      <router-link to="/forgetPassWord">forgot password ?</router-link>
+    </form>
+  </div>
+</template>
+
+<script setup lang="ts">const emit = defineEmits<{
+  (e: 'update:modelValue', value: string): void
+}>()
+import InputFirstName from "@/components/inputFirstName.vue";
+import InputLastName from "@/components/InputLastName.vue";
+import InputAgeUser from "@/components/InputAgeUser.vue";
+import InputMail from './InputMail.vue';
+import InputPassWord from '@/components/InputPassWord.vue';
+import ConfirmInput from '@/components/ConfirmInput.vue';
+import buttonRegister from './buttonRegister.vue';
+
+import {ref, reactive } from 'vue';
+import type { Ref } from 'vue'
+import { useVuelidate } from '@vuelidate/core';
+import { required, email, minLength, maxLength } from '@vuelidate/validators';
+
+
+const state = reactive({
+  firstName: '',
+  lastName: '',
+  birthDate: '',
+  email: '',
+  password: '',
+  confirmPassword: ''
+});
+
+const rules = {
+  firstName: { required, minLength: minLength(4), maxLength: maxLength(20) },
+  lastName: { required, minLength: minLength(4), maxLength: maxLength(20) },
+  birthDate: { required },
+  email: { required, email },
+  password: { required },
+  confirmPassword: { required }
+};
+
+const v$ = useVuelidate(rules, state);
+
+const submitForm = async () => {
+  const isValid = await v$.$validate();
+  if (isValid) {
+    v$.$touch();
+    console.log('Form is valid');
+  } else {
+    console.log('Form is invalid');
+  }
+};
+</script>
+

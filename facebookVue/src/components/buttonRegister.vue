@@ -1,6 +1,6 @@
 <template>
     <div>
-        <button @click="$emit('event-register')">Register</button>
+        <button type="submit">Register</button>
     </div>
 </template>
 

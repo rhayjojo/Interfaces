@@ -1,10 +1,9 @@
 <template>
   <div>
     <input
-        type="password"
-        name="confirmPassword"
-        id="confirmPassword"
-        placeholder="confirm password "
+        type="date"
+        name="date"
+        id="date"
         :value="modelValue"
         @input="$emit('update:modelValue', $event.target.value)"
     >

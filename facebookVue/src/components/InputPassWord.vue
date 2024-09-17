@@ -1,19 +1,18 @@
 <template>
-    <div>
-        <input type="password" v-model="password" @input="$emit('event-password', password)"  required>
-        <!-- <p v-if="props">{{ props }}</p> -->
-    </div>
+  <div>
+    <input
+        type="password"
+        name="password"
+        id="password"
+        placeholder="password "
+        :value="modelValue"
+        @input="$emit('update:modelValue', $event.target.value)"
+    >
+  </div>
 </template>
 
 <script setup lang="ts">
-    import  {ref} from 'vue'
-    import type { Ref } from 'vue'
-
-    const password : Ref<string> = ref('')
-   
+const props = defineProps<{
+  modelValue: string
+}>()
 </script>
-    
-
-<style scoped>
-    
-</style>
