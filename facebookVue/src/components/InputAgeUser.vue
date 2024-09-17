@@ -2,8 +2,8 @@
   <div>
     <input
         type="date"
-        name="date"
-        id="date"
+        name="birthDate"
+        id="birthDate"
         :value="modelValue"
         @input="$emit('update:modelValue', $event.target.value)"
     >

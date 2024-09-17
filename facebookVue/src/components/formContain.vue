@@ -7,19 +7,19 @@
       <small v-if="v$.firstName.$error && v$.firstName.$touch" style="color: red;">{{ v$.firstName.$errors[0].$message }}</small>
 
       <InputLastName  v-model="state.lastName"/>
-      <small v-if="v$.lastName.$error" style="color: red;">{{ v$.lastName.$errors[0].$message }}</small>
+      <small v-if="v$.lastName.$error && v$.lastName.$touch" style="color: red;">{{ v$.lastName.$errors[0].$message }}</small>
 
-      <InputAgeUser v-model="state.age"/>
-      <small v-if="v$.birthDate.$error" style="color: red;">{{ v$.birthDate.$errors[0].$message }}</small>
+      <InputAgeUser v-model="state.birthDate"/>
+      <small v-if="v$.birthDate.$error && v$.birthDate.$touch" style="color: red;">{{ v$.birthDate.$errors[0].$message }}</small>
 
       <InputMail  v-model="state.email"/>
-      <small v-if="v$.email.$error" style="color: red;">{{ v$.email.$errors[0].$message }}</small>
+      <small v-if="v$.email.$error && v$.email.$touch" style="color: red;">{{ v$.email.$errors[0].$message }}</small>
 
-      <InputPassWord  v-model="state.password"/>
-      <small v-if="v$.password.$error" style="color: red;">{{ v$.password.$errors[0].$message }}</small>
+      <InputPassWord  v-model="state.password"></InputPassWord>
+      <small v-if="v$.password.$error && v$.password.$touch" style="color: red;">{{ v$.password.$errors[0].$message }}</small>
 
       <ConfirmInput  v-model="state.confirmPassword"/>
-      <small v-if="v$.confirmPassword.$error" style="color: red;">{{ v$.confirmPassword.$errors[0].$message }}</small>
+      <small v-if="v$.confirmPassword.$error && v$.confirmPassword.$touch" style="color: red;">{{ v$.confirmPassword.$errors[0].$message }}</small>
 
       <buttonRegister />
       <router-link to="/forgetPassWord">forgot password ?</router-link>
