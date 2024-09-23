@@ -1,77 +1,112 @@
 <template>
   <RouterView />
-  <div>
-    <form @submit.prevent="submitForm">
-      <h1>Register to task_Manage</h1>
-      <InputFirstName v-model="state.firstName"/>
-      <small v-if="v$.firstName.$error && v$.firstName.$touch" style="color: red;">{{ v$.firstName.$errors[0].$message }}</small>
+  <div class="m-9">
+    <div></div>
+    <form @submit.prevent="handleSubmit" class="w-full p-10 mx-auto mt-10 items-center text-center shadow-lg shadow-indigo-500/50 ">
+      <h1 class="text-xl text-blue-700 font-bold font-sans">Register to task_Manage</h1>
+      <div class="block gap-2.5">
+        <InputFirstName  v-model="state.firstName" class=""/>
+        <small  class="text-red-700 m-0"  v-if="v$.firstName.$error">{{ v$.firstName.$errors[0].$message }}</small>
 
-      <InputLastName  v-model="state.lastName"/>
-      <small v-if="v$.lastName.$error && v$.lastName.$touch" style="color: red;">{{ v$.lastName.$errors[0].$message }}</small>
+        <InputLastName   v-model="state.lastName"/>
+        <small class="text-red-700" v-if="v$.lastName.$error">{{ v$.lastName.$errors[0].$message }}</small>
 
-      <InputAgeUser v-model="state.birthDate"/>
-      <small v-if="v$.birthDate.$error && v$.birthDate.$touch" style="color: red;">{{ v$.birthDate.$errors[0].$message }}</small>
+        <InputAgeUser @updateBirthDay="handleBirthDayChange"/>
 
-      <InputMail  v-model="state.email"/>
-      <small v-if="v$.email.$error && v$.email.$touch" style="color: red;">{{ v$.email.$errors[0].$message }}</small>
+        <!--        <ListBoxSelectCivility @updateCivility="handleCivilityChange" />-->
 
-      <InputPassWord  v-model="state.password"></InputPassWord>
-      <small v-if="v$.password.$error && v$.password.$touch" style="color: red;">{{ v$.password.$errors[0].$message }}</small>
 
-      <ConfirmInput  v-model="state.confirmPassword"/>
-      <small v-if="v$.confirmPassword.$error && v$.confirmPassword.$touch" style="color: red;">{{ v$.confirmPassword.$errors[0].$message }}</small>
 
-      <buttonRegister />
-      <router-link to="/forgetPassWord">forgot password ?</router-link>
+        <InputMail  v-model="state.email"/>
+        <small class="text-red-700" v-if="v$.email.$error">{{ v$.email.$errors[0].$message }}</small>
+
+        <InputPassWord  v-model="state.password"></InputPassWord>
+        <small class="text-red-700" v-if="v$.password.$error">{{ v$.password.$errors[0].$message }}</small>
+
+        <ConfirmInput  v-model="state.confirmPassword"/>
+        <small class="text-red-700" v-if="v$.confirmPassword.$error ">{{ v$.confirmPassword.$errors[0].$message }}</small>
+      </div>
+
+
+      <buttonRegister ></buttonRegister>
+      <router-link class='text-blue-500 text-xs underline decoration-1' to="/login">login</router-link>
     </form>
   </div>
 </template>
 
-<script setup lang="ts">const emit = defineEmits<{
-  (e: 'update:modelValue', value: string): void
-}>()
+<script setup lang="ts">
 import InputFirstName from "@/components/inputFirstName.vue";
 import InputLastName from "@/components/InputLastName.vue";
 import InputAgeUser from "@/components/InputAgeUser.vue";
 import InputMail from './InputMail.vue';
 import InputPassWord from '@/components/InputPassWord.vue';
 import ConfirmInput from '@/components/ConfirmInput.vue';
-import buttonRegister from './buttonRegister.vue';
-
-import {ref, reactive } from 'vue';
-import type { Ref } from 'vue'
+import buttonRegister from '@/components/buttonRegister.vue';
+import ListBoxSelectCivility from "@/components/listBoxSelectCivility.vue";
+import { helpers } from '@vuelidate/validators';
+import { reactive, computed } from 'vue';
 import { useVuelidate } from '@vuelidate/core';
-import { required, email, minLength, maxLength } from '@vuelidate/validators';
+import { required, email, minLength, sameAs } from '@vuelidate/validators';
+import { useI18n } from 'vue-i18n';
+import axios from "axios";
+
+
+
+const { t } = useI18n();
+const hasSymbol = helpers.regex(/[!@#\$%\^\&*\)\(+=._-]+/);
+
 
 
 const state = reactive({
   firstName: '',
   lastName: '',
-  birthDate: '',
   email: '',
   password: '',
-  confirmPassword: ''
+  confirmPassword: '',
+  birthDay: {
+    day: 1,
+    year: 1980,
+    month: 'Jan'
+  }
 });
 
-const rules = {
-  firstName: { required, minLength: minLength(4), maxLength: maxLength(20) },
-  lastName: { required, minLength: minLength(4), maxLength: maxLength(20) },
-  birthDate: { required },
-  email: { required, email },
-  password: { required },
-  confirmPassword: { required }
+// const handleCivilityChange = (value) => {
+//   state.selectedCivility = value
+// }
+const handleBirthDayChange = (value) => {
+  state.birthDay = value;
 };
-
+const rules = computed(() =>{
+  return{
+    firstName:{ required, minLength:minLength(4) },
+    lastName:{ required, minLength:minLength(4) },
+    email: { required, email },
+    password: { required, minLength:minLength(6), pattern:helpers.withMessage('Password must contain at least one special symbol', hasSymbol) },
+    confirmPassword: { required, sameAs: sameAs(state.password) }
+  }
+})
 const v$ = useVuelidate(rules, state);
 
-const submitForm = async () => {
-  const isValid = await v$.$validate();
-  if (isValid) {
-    v$.$touch();
-    console.log('Form is valid');
+
+
+const handleSubmit = async(): Promise<void> => {
+  const result = await v$.value.$validate();
+  if (!result) {
+    console.log('Le formulaire contient des erreurs');
   } else {
-    console.log('Form is invalid');
+    localStorage.setItem('user', JSON.stringify(state))
+    router.push('/home')
+
+    // axios.post('https://jsonplaceholder.typicode.com/posts', state)
+    //     .then(response => {
+    //
+    //       state.id = response.data.id; // Mise à jour correcte de state
+    //       console.log('Success:', response.data);
+    //     })
+    //     .catch(error => {
+    //       console.error("There was an error!", error);
+    //     });
   }
 };
-</script>
 
+</script>
