@@ -1,38 +1,47 @@
 <template>
   <RouterView />
-  <div class="m-9">
-    <div></div>
-    <form @submit.prevent="handleSubmit" class="w-full p-10 mx-auto mt-10 items-center text-center shadow-lg shadow-indigo-500/50 ">
-      <h1 class="text-xl text-blue-700 font-bold font-sans">Register to task_Manage</h1>
-      <div class="block gap-2.5">
-        <InputFirstName  v-model="state.firstName" class=""/>
-        <small  class="text-red-700 m-0"  v-if="v$.firstName.$error">{{ v$.firstName.$errors[0].$message }}</small>
-
-        <InputLastName   v-model="state.lastName"/>
-        <small class="text-red-700" v-if="v$.lastName.$error">{{ v$.lastName.$errors[0].$message }}</small>
-
-        <InputAgeUser @updateBirthDay="handleBirthDayChange"/>
-
-        <!--        <ListBoxSelectCivility @updateCivility="handleCivilityChange" />-->
-
-
-
-        <InputMail  v-model="state.email"/>
-        <small class="text-red-700" v-if="v$.email.$error">{{ v$.email.$errors[0].$message }}</small>
-
-        <InputPassWord  v-model="state.password"></InputPassWord>
-        <small class="text-red-700" v-if="v$.password.$error">{{ v$.password.$errors[0].$message }}</small>
-
-        <ConfirmInput  v-model="state.confirmPassword"/>
-        <small class="text-red-700" v-if="v$.confirmPassword.$error ">{{ v$.confirmPassword.$errors[0].$message }}</small>
+  <div class="flex items-center justify-center min-h-screen overflow-hidden lg:mt-[-30px]">
+    <div class="m-9 grid grid-cols-1 md:grid-cols-2 md:gap-0 w-full max-w-5xl">
+      <div class="hidden md:block">
+        <img
+            class="w-full h-full object-cover shadow-xl shadow-indigo-950/100"
+            alt="calender"
+            src="https://media.istockphoto.com/id/1279922227/es/foto/el-primer-plano-del-calendario-y-el-reloj-despertador-en-la-mesa-azul-la-planificaci%C3%B3n-para-la.jpg?s=612x612&w=0&k=20&c=eB1yqz2URl_fEPnaKfJxSL07c7r8KlGtfPVwGO4uqxs="
+        />
       </div>
+      <form @submit.prevent="handleSubmit" class="w-full p-8 mx-auto text-center shadow-xl shadow-indigo-950/100 md:w-full md:max-w-md bg-gray-200">
+        <h1 class="text-xl text-blue-700 font-bold">{{ title }}</h1>
+        <div class="block gap-4 mt-4">
+          <InputFirstName :errormessage="v$.firstName.$error" v-model="state.firstName" />
+          <small data-test="firstName" class="text-red-700" v-if="v$.firstName.$error">{{ v$.firstName.$errors[0].$message }}</small>
 
+          <InputLastName  :errormessage="v$.lastName.$error" v-model="state.lastName" />
+          <small data-test="lastName" class="text-red-700" v-if="v$.lastName.$error">{{ v$.lastName.$errors[0].$message }}</small>
 
-      <buttonRegister ></buttonRegister>
-      <router-link class='text-blue-500 text-xs underline decoration-1' to="/login">login</router-link>
-    </form>
+          <InputAgeUser @updateBirthDay="handleBirthDayChange" />
+
+          <InputMail :errormessage="v$.email.$error" v-model="state.email" />
+          <small data-test="email" class="text-red-700" v-if="v$.email.$error">{{ v$.email.$errors[0].$message }}</small>
+
+          <InputPassWord :errormessage="v$.password.$error" v-model="state.password"></InputPassWord>
+          <small data-test="password" class="text-red-700" v-if="v$.password.$error">{{ v$.password.$errors[0].$message }}</small>
+
+          <ConfirmInput :errormessage="v$.confirmPassword.$error" v-model="state.confirmPassword" />
+          <small data-test="confirmPassword" class="text-red-700" v-if="v$.confirmPassword.$error">{{ v$.confirmPassword.$errors[0].$message }}</small>
+        </div>
+
+        <buttonRegister class="mt-4"></buttonRegister>
+
+        <router-link id="login-link" to="/login">
+          <div class="text-blue-500 text-xs hover:underline mt-2">
+            <p>Login</p>
+          </div>
+        </router-link>
+      </form>
+    </div>
   </div>
 </template>
+
 
 <script setup lang="ts">
 import InputFirstName from "@/components/inputFirstName.vue";
@@ -49,6 +58,8 @@ import { useVuelidate } from '@vuelidate/core';
 import { required, email, minLength, sameAs } from '@vuelidate/validators';
 import { useI18n } from 'vue-i18n';
 import axios from "axios";
+import { useRouter } from 'vue-router';
+
 
 
 
@@ -70,37 +81,51 @@ const state = reactive({
   }
 });
 
-// const handleCivilityChange = (value) => {
-//   state.selectedCivility = value
-// }
+
 const handleBirthDayChange = (value) => {
   state.birthDay = value;
 };
-const rules = computed(() =>{
-  return{
-    firstName:{ required, minLength:minLength(4) },
-    lastName:{ required, minLength:minLength(4) },
-    email: { required, email },
-    password: { required, minLength:minLength(6), pattern:helpers.withMessage('Password must contain at least one special symbol', hasSymbol) },
-    confirmPassword: { required, sameAs: sameAs(state.password) }
-  }
-})
+const rules = computed(() => {
+  return {
+    firstName: {
+      required: helpers.withMessage(t('message.firstNameRequired'), required),
+      minLength: helpers.withMessage(t('message.firstNameMinLength'), minLength(4))
+    },
+    lastName: {
+      required: helpers.withMessage(t('message.lastNameRequired'), required),
+      minLength: helpers.withMessage(t('message.lastNameMinLength'), minLength(4))
+    },
+    email: {
+      required: helpers.withMessage(t('message.emailRequired'), required),
+      email: helpers.withMessage(t('message.emailInvalid'), email)
+    },
+    password: {
+      required: helpers.withMessage(t('message.passwordRequired'), required),
+      minLength: helpers.withMessage(t('message.passwordMinLength'), minLength(6)),
+      pattern: helpers.withMessage(t('message.passwordInvalid'), hasSymbol)
+    },
+    confirmPassword: {
+      required: helpers.withMessage(t('message.confirmPasswordRequired'), required),
+      sameAs: helpers.withMessage(t('message.confirmPasswordInvalid'), sameAs(state.password))
+    }
+  };
+});
 const v$ = useVuelidate(rules, state);
-
-
+const router = useRouter();
+const title = t('message.titleRegister')
 
 const handleSubmit = async(): Promise<void> => {
   const result = await v$.value.$validate();
   if (!result) {
-    console.log('Le formulaire contient des erreurs');
+    console.log('the form has some errors');
   } else {
-    localStorage.setItem('user', JSON.stringify(state))
-    router.push('/home')
+      localStorage.setItem('user', JSON.stringify(state));
+      await router.push('/login');
 
-    // axios.post('https://jsonplaceholder.typicode.com/posts', state)
+    // axios.post('http://localhost:8080/RegisterUser', state)
     //     .then(response => {
     //
-    //       state.id = response.data.id; // Mise à jour correcte de state
+    //       state.id = response.data.id;
     //       console.log('Success:', response.data);
     //     })
     //     .catch(error => {
