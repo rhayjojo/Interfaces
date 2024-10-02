@@ -5,9 +5,5 @@
   </template>
   
   <script setup lang="ts">
-  import formContain from '@/components/formContain.vue';
+  import formContain from '@/components/FormContain.vue';
   </script>
-  
-  <style scoped>
-  
-  </style>

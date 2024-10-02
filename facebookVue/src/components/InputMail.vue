@@ -8,7 +8,6 @@
         name="email"
         id="email"
         placeholder="email"
-        :value="modelValue"
         @input="$emit('update:modelValue', $event.target.value)"
         class="w-[97%] border-[1px] border-solid bg-white p-2 focus:outline-none rounded mt-3"
         :class="{
@@ -18,12 +17,12 @@
           }"
         data-test="email"
     >
+    <small data-test="email" class="text-red-700" v-if="errormessage">{{ errormessage }}</small>
   </div>
 </template>
 
 <script setup lang="ts">
-const props = defineProps<{
+defineProps<{
   errormessage
-  modelValue: string
 }>()
 </script>

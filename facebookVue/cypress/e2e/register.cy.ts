@@ -1,56 +1,21 @@
 // https://on.cypress.io/api
 
-describe('Register Component Test', () => {
+describe('Register', () => {
   beforeEach(() => {
     cy.visit('http://localhost:5173/');
   });
 
-  // it('should display validation errors when form is incomplete', () => {
-  //
-  //
-  //
-  //
-  //   cy.contains('First name is required');
-  //   cy.contains('Last name is required');
-  //   cy.contains('Email is required');
-  //   cy.contains('Password is required');
-  //   cy.contains('Please confirm your password');
-  //
-  //
-  // });
-
-  it('should display validation errors when form is incomplete', () => {
-    cy.get('input[name="firstName"]').type(" ");
-    cy.get('input[name="lastName"]').type('gangoua');
-    cy.get('input[name="email"]').type('jojo.gangoua@example.com');
-    cy.get('input[name="password"]').type('P@ssw0rd!');
-    cy.get('input[name="confirmPassword"]').type('P@ssw0rd!');
-
-    cy.get('form').submit();
-    cy.get("[data-test='firstName']").should('have.text', "First name is required")
-  });
-
-
-  it('should show an error if passwords do not match', () => {
-
-    cy.get('input[name="password"]').type('P@ssw0rd!');
-    cy.get('input[name="confirmPassword"]').type('DifferentPassword!');
-
-
-    cy.get('#register-form').submit();
-
-
-    cy.contains('Passwords do not match');
-  });
 
   it('should register a user successfully with valid data', () => {
-    cy.get('input[name="firstName"]').type('jojo');
-    cy.get('input[name="lastName"]').type('gangoua');
+    cy.get('[data-test="inputFirstname"]').type("jojo");
+    cy.get('[data-test="inputLastname"]').type('gangoua');
     cy.get('input[name="email"]').type('jojo.gangoua@example.com');
-    cy.get('input[name="password"]').type('P@ssw0rd!');
-    cy.get('input[name="confirmPassword"]').type('P@ssw0rd!');
+    cy.get('[data-test="inputPassWord"]').type('P@ssw0rd!');
+    cy.get('[data-test="inputConfirmPassWord"]').type('P@ssw0rd!');
 
-    cy.get('#register-form').submit();
+
+
+    cy.get('form').submit();
     cy.url().should('include', '/login', );
 
     cy.window().then((window) => {

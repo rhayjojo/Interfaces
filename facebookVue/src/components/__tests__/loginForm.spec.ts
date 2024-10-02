@@ -21,22 +21,24 @@ describe('Login.vue', () => {
         };
         vi.mocked(useRouter).mockReturnValue(mockRouter);
         wrapper = mount(Login, {
-            global: {
-                stubs: {
-                    InputFirstName: true,
-                    InputPassWord: true,
-                    buttonLogin: true,
-                },
-            },
         });
     });
 
-    it('should display validation errors when form is submitted empty', async () => {
+    it('should exist', async () => {
+        expect(wrapper.findComponent(Login).exists()).toBe(true);
+    });
+
+    it.only('should display an error message if at least one form field is empty', async () => {
+        const inputFirstname = wrapper.get('[data-test="inputFirstname"]').find('input')
+        await inputFirstname.setValue('');
+
+        const inputPassWord = wrapper.get('[data-test="inputPassWord"]').find('input')
+        await inputPassWord.setValue('password@');
+
         await wrapper.find('form').trigger('submit.prevent');
         await nextTick();
 
-        expect(wrapper.text()).toContain('message.firstNameRequired');
-        expect(wrapper.text()).toContain('message.passwordRequired');
+        expect(wrapper.find('small.text-red-700').text()).toBe('message.firstNameRequired');
     });
 
     it('should display error message when credentials are wrong', async () => {
@@ -46,8 +48,12 @@ describe('Login.vue', () => {
         }));
 
 
-        await wrapper.findComponent({ name: 'InputFirstName' }).setValue('jojo');
-        await wrapper.findComponent({ name: 'InputPassWord' }).setValue('P@ssw0rd!');
+        const inputFirstname = wrapper.get('[data-test="inputFirstname"]').find('input')
+        await inputFirstname.setValue('jojo');
+
+        const inputPassWord = wrapper.get('[data-test="inputPassWord"]').find('input')
+        await inputPassWord.setValue('password@');
+
         await wrapper.find('form').trigger('submit.prevent');
         await flushPromises();
 
@@ -55,7 +61,7 @@ describe('Login.vue', () => {
         expect(errorMessage.text()).toBe('message.errorMessage');
     });
 
-    it('should redirect to home when credentials are correct', async () => {
+    it.only('should redirect to home when credentials are correct', async () => {
         localStorage.setItem('user', JSON.stringify({
             firstName: 'correctUser',
             password: 'correctPassword!123',

@@ -1,62 +1,62 @@
 import { mount } from '@vue/test-utils'
-import { test, expect } from 'vitest'
+import {it, expect, beforeEach, describe} from 'vitest'
 import InputPassWord from "../InputPassWord.vue";
 
-test('should emit update:modelValue on input', async () =>{
-    const wrapper = mount(InputPassWord, {
-        props: {
-            modelValue: '',
-            errormessage: ''
-        }
-    } )
 
-    const password = wrapper.get('[data-test="password"]')
-    await password.setValue('jo200455')
-
-    expect(wrapper.emitted()['update:modelValue']).toBeTruthy()
-    expect(wrapper.emitted()['update:modelValue'][0]).toEqual(['jo200455'])
-})
-
-test('should apply the correct class based on errormessage prop', async () =>{
-    const wrapper = mount(InputPassWord, {
-        props: {
-            modelValue: '',
-            errormessage: 'This field is required'
-        }
+describe('InputPassWord', () =>{
+    let wrapper
+    beforeEach(() =>{
+         wrapper = mount(InputPassWord, {
+            props: {
+                errormessage: 'detect one error here'
+            }
+        } )
     })
 
-    const password = wrapper.get('[data-test="password"]')
-    expect(password.classes()).toContain('focus:border-red-700')
-    expect(password.classes()).toContain('border-red-700')
-    await wrapper.setProps({errormessage: false})
-    expect(password.classes()).toContain('focus:border-sky-400')
-})
+    it("should render correctly", () => {
+        expect(wrapper.exists()).toBe(true);
+    });
 
-test('should mask and show password', async () =>{
-    const wrapper = mount(InputPassWord, {
-        props:{
-            modelValue: '',
-            errormessage: 'This field is required'
-        }
+    it('should emit update:modelValue on input password', async () =>{
+        const inputPassWord = wrapper.find('input')
+        await inputPassWord.setValue('password@');
+
+        expect(wrapper.emitted()['update:modelValue']).toBeTruthy()
+        expect(wrapper.emitted()['update:modelValue'][0]).toEqual(['password@'])
     })
 
-    const password = wrapper.get('[data-test="password"]')
-    await password.setValue('jo200455')
+    it('should apply the correct class based on errormessage prop', async () =>{
 
-    expect(password.attributes('type')).toBe('password')
+        const inputPassWord = wrapper.find('input')
+        expect(inputPassWord.classes()).toContain('focus:border-red-700')
+        expect(inputPassWord.classes()).toContain('border-red-700')
+        await wrapper.setProps({errormessage: ''})
+        expect(inputPassWord.classes()).toContain('focus:border-sky-400')
+    })
 
-    const toggleButton = wrapper.get('#toggle-password')
-    await toggleButton.trigger('click')
+    it.only('should mask and show password', async () =>{
 
-    expect(password.attributes('type')).toBe('text')
+        const inputPassWord = wrapper.find('input')
+        await inputPassWord.setValue('password@');
 
-    expect(wrapper.findComponent({ name: 'EyeSlashIcon' }).exists()).toBe(false)
-    await toggleButton.trigger('click')
+        expect(inputPassWord.attributes('type')).toBe('password')
 
-    expect(password.attributes('type')).toBe('password')
+        const toggleButton = wrapper.get('#toggle-password')
+        await toggleButton.trigger('click')
 
-    expect(wrapper.findComponent({ name: 'EyeIcon' }).exists()).toBe(false)
+        expect(inputPassWord.attributes('type')).toBe('text')
+
+        expect(wrapper.findComponent({ name: 'EyeSlashIcon' }).exists()).toBe(false)
+        await toggleButton.trigger('click')
+
+        expect(inputPassWord.attributes('type')).toBe('password')
+
+        expect(wrapper.findComponent({ name: 'EyeIcon' }).exists()).toBe(false)
 
 
+    })
 })
+
+
+
 

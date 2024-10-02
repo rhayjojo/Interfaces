@@ -1,55 +1,74 @@
-describe('login component test', () => {
+describe('login ', () => {
     beforeEach(() => {
         cy.visit('/');
     });
 
-    it('should show an error message for invalid credentials', () => {
+    describe('should success ', () => {
+        it('when valid data is entry', () => {
+            cy.get('[data-test="inputFirstname"]').type('jojo');
+            cy.get('[data-test="inputLastname"]').type('gangoua');
+            cy.get('input[name="email"]').type('jojo.gangoua@example.com');
+            cy.get('[data-test="inputPassWord"]').type('P@ssw0rd!');
+            cy.get('[data-test="inputConfirmPassWord"]').type('P@ssw0rd!');
 
-        cy.get('input[name="firstName"]').type('InvalidUser');
-        cy.get('input[name="password"]').type('WrongPassword@');
+            cy.get('[data-test="formRegister"]').submit();
+            cy.url().should('include', '/login', );
 
-        cy.get('#login-form').submit();
-        cy.contains('Wrong firstName or password!')
-    });
+            cy.window().then((window) => {
+                const user = JSON.parse(window.localStorage.getItem('user'));
+                expect(user).to.have.property('firstName', 'jojo');
+                expect(user).to.have.property('lastName', 'gangoua');
+                expect(user).to.have.property('email', 'jojo.gangoua@example.com');
+            });
+            cy.url('/login');
+            cy.get('[data-test="inputFirstname"]').type('jojo');
+            cy.get('[data-test="inputPassWord"]').type('P@ssw0rd!');
 
-    it.only('should log in a user successfully with valid data', () => {
-        cy.get('input[name="firstName"]').type('jojo');
-        cy.get('input[name="lastName"]').type('gangoua');
-        cy.get('input[name="email"]').type('jojo.gangoua@example.com');
-        cy.get('input[name="password"]').type('P@ssw0rd!');
-        cy.get('input[name="confirmPassword"]').type('P@ssw0rd!');
 
-        cy.get('#register-form').submit();
-        cy.url().should('include', '/login', );
-
-        cy.window().then((window) => {
-            const user = JSON.parse(window.localStorage.getItem('user'));
-            expect(user).to.have.property('firstName', 'jojo');
-            expect(user).to.have.property('lastName', 'gangoua');
-            expect(user).to.have.property('email', 'jojo.gangoua@example.com');
+            cy.get('[data-test="submit-login"]').click();
+            cy.url().should('include', 'http://localhost:5173/home', { timeout: 10000 });
         });
-        cy.url('/login');
-        cy.get('[data-test="input-username"]').type('jojo');
-        cy.get('[data-test="input-password"]').type('P@ssw0rd!');
+
+        it('should log in a user successfully with valid data', () => {
+            cy.get('[data-test="inputFirstname"]').type('jojo');
+            cy.get('[data-test="inputLastname"]').type('gangoua');
+            cy.get('input[name="email"]').type('jojo.gangoua@example.com');
+            cy.get('[data-test="inputPassWord"]').type('P@ssw0rd!');
+            cy.get('[data-test="inputConfirmPassWord"]').type('P@ssw0rd!');
+
+            cy.get('[data-test="formRegister"]').submit();
+            cy.url().should('include', '/login', );
+
+            cy.window().then((window) => {
+                const user = JSON.parse(window.localStorage.getItem('user'));
+                expect(user).to.have.property('firstName', 'jojo');
+                expect(user).to.have.property('lastName', 'gangoua');
+                expect(user).to.have.property('email', 'jojo.gangoua@example.com');
+            });
+            cy.url('/login');
+            cy.get('[data-test="inputFirstname"]').type('jojo');
+            cy.get('[data-test="inputPassWord"]').type('P@ssw0rd!');
 
 
-        cy.get('[data-test="submit-login"]').click();
-        cy.url().should('include', 'http://localhost:5173/home', { timeout: 10000 });
-    });
 
-    it('should toggle password visibility', () => {
+            cy.get('[data-test="submit-login"]').click();
+            cy.url().should('include', 'http://localhost:5173/home', { timeout: 10000 });
+        });
 
-        const password = 'P@ssw0rd!';
-        cy.get('input[name="password"]').type(password);
+    })
 
-        cy.get('input[name="password"]').should('have.attr', 'type', 'password');
+    describe('should fail', () =>{
+        beforeEach(() => {
+            cy.visit('/login');
+        });
+        it('should show an error message for invalid credentials', () => {
 
-        cy.get('#toggle-password').click();
+            cy.get('[data-test="inputFirstname"]').type('InvalidUser');
+            cy.get('[data-test="inputPassWord"]').type('WrongPassword@');
 
-        cy.get('input[name="password"]').should('have.attr', 'type', 'text');
-        cy.get('input[name="password"]').should('have.value', password);
+            cy.get('[data-test="loginForm"]').submit();
+            cy.get('[data-test="errormessage"]').should('contain.text','Wrong firstname or password!')
+        });
+    })
 
-        cy.get('#toggle-password').click();
-        cy.get('input[name="password"]').should('have.attr', 'type', 'password');
-    });
 });

@@ -13,6 +13,8 @@ const i18n = createI18n({
     messages: {
         en: {
             message: {
+                login: 'login',
+                Register: "Register",
                 titleRegister: 'Register to task_Manager',
                 titleLogin: 'Login to task_Manager',
                 errorMessage:'Wrong firstname or password!',
@@ -29,7 +31,12 @@ const i18n = createI18n({
                 confirmPasswordInvalid: 'Passwords do not match',
                 registerTitle: 'Register to task_Manage',
                 loginLink: 'Login',
-                submit: 'Submit'
+                submit: 'Submit',
+                forgetPassWord:'Forget passWord ?',
+                placeholderFirstname:'firstname',
+                placeholderLastname:'lastname',
+                placeholderPassword:'password',
+                placeholderConfirmPassword:'confirm your password'
             }
         },
         fr: {
@@ -50,7 +57,14 @@ const i18n = createI18n({
                 confirmPasswordInvalid: 'Les mots de passe ne correspondent pas',
                 registerTitle: 'Inscription à task_Manage',
                 loginLink: 'Connexion',
-                submit: 'Soumettre'
+                submit: 'Soumettre',
+                Register: "S'inscrire",
+                login:'Se connecter',
+                forgetPassWord:'Mot de passe oublie  ?',
+                placeholderFirstname:'prenom',
+                placeholderLastname:'nom de famille',
+                placeholderPassword:'mot de passe',
+                placeholderConfirmPassword:'confirmez votre mot de passe'
             }
         }
     }
