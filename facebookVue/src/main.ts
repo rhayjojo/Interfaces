@@ -13,6 +13,7 @@ const i18n = createI18n({
     messages: {
         en: {
             message: {
+                setPassword:'set your password',
                 login: 'login',
                 Register: "Register",
                 titleRegister: 'Register to task_Manager',
@@ -41,6 +42,7 @@ const i18n = createI18n({
         },
         fr: {
             message: {
+                welcomeHome:'WELCOME HOME',
                 titleRegister:"s'inscrire sur le gestionnaire de tache",
                 titleLogin:"Se connecter au gestionnaire de tache",
                 errorMessage:'Prénom ou mot de passe incorrect !',
@@ -64,7 +66,9 @@ const i18n = createI18n({
                 placeholderFirstname:'prenom',
                 placeholderLastname:'nom de famille',
                 placeholderPassword:'mot de passe',
-                placeholderConfirmPassword:'confirmez votre mot de passe'
+                placeholderConfirmPassword:'confirmez votre mot de passe',
+                setPassword:'définir votre mot de passe',
+                welcomeHome:'BIENVENUE À LA MAISON',
             }
         }
     }

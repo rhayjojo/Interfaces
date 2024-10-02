@@ -1,9 +1,11 @@
 <template>
   <div class="flex justify-center items-center h-screen">
-    <h1 class="text-5xl font-bold animate-bounce">WELCOME HOME</h1>
+    <h1 class="text-5xl font-bold animate-bounce">{{ welcomeHome }}</h1>
   </div>
 </template>
-
+<script setup lang="ts">
+  const welcomeHome = t('message.welcomeHome')
+</script>
 <style scoped>
 @keyframes fadeIn {
   0% {
