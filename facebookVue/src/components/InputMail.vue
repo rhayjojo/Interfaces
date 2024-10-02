@@ -1,8 +1,5 @@
 <template>
   <div class="text-black">
-<!--    <div class="label">-->
-<!--      <span class="label-text text-2xl text-black text-center">What is your firstName?</span>-->
-<!--    </div>-->
     <input
         type="email"
         name="email"
