@@ -77,14 +77,13 @@ const i18n = createI18n({
 const app = createApp(App);
 
 window.addEventListener('languagechange', () => {
-    const newLocale = navigator.language.substring(0, 2); // Nouvelle langue du système avec deux lettres
-    i18n.global.locale.value = newLocale; // Mise à jour de la langue dans i18n
+    const newLocale = navigator.language.substring(0, 2);
+    i18n.global.locale.value = newLocale;
 });
 
 app.use(i18n);
 app.use(router);
 
-// Montage de l'application
 app.mount('#app');
 
 

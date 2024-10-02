@@ -10,11 +10,10 @@ const routes = [
     { path: '/home', component: home },
     { path: '/login', component: login },
     { path: '/forgetPassWord', component: forgetPassWord },
-
 ];
 
 const router = createRouter({
-    history: createWebHistory(), // Utilise createWebHistory() ici
+    history: createWebHistory(),
     routes,
 });
 
