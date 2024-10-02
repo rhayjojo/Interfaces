@@ -28,7 +28,7 @@ describe('Login.vue', () => {
         expect(wrapper.findComponent(Login).exists()).toBe(true);
     });
 
-    it.only('should display an error message if at least one form field is empty', async () => {
+    it('should display an error message if at least one form field is empty', async () => {
         const inputFirstname = wrapper.get('[data-test="inputFirstname"]').find('input')
         await inputFirstname.setValue('');
 

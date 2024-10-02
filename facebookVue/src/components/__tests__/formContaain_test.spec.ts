@@ -3,8 +3,6 @@ import { it, describe, expect, beforeEach, vi } from 'vitest';
 import FormContain from '@/components/FormContain.vue';
 import { useRouter } from 'vue-router';
 import InputMail from "../InputMail.vue";
-import InputPassWord from "../InputPassWord.vue";
-import ConfirmInput from "../ConfirmInput.vue";
 
 
 vi.mock('vue-router', () => ({
